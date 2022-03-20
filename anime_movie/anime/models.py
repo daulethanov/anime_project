@@ -41,11 +41,24 @@ class Actor(models.Model):
 
 
 class Anime(models.Model):
+    SERIAL = 'serial'
+    FILM = 'film'
+    OVA = 'ova'
+    SPECIAL = 'special'
+
+    CHOICE_CATEGORY = {
+        (SERIAL, 'Сериал'),
+        (FILM, 'Фильм'),
+        (OVA, 'OVA'),
+        (SPECIAL, 'Special')
+    }
+
     title = models.CharField('Аниме', max_length=255)
     description = models.TextField('Описание')
+    hep = models.TextField('видео')
     genres = models.ManyToManyField(Genre, verbose_name='Жанры')
     actors = models.ManyToManyField(Actor, verbose_name='Режиссер')
-    category = models.ForeignKey(Category, verbose_name='Категория', on_delete=models.SET_NULL, null=True)
+    category = models.CharField(choices=CHOICE_CATEGORY, verbose_name='Категория', max_length=50, null=True)
     url = models.SlugField(max_length=140, unique=True)
     draft = models.BooleanField('Черновик', default=False)
     poster = models.ImageField('Изоброжение', upload_to='anime/')
@@ -63,10 +76,10 @@ class Anime(models.Model):
 
 
 class RatingStar(models.Model):
-    value = models.PositiveIntegerField('Значение', default=0)
+    value = models.FloatField('Значение', default=0)
 
     def __str__(self):
-        return self.value
+        return str(self.value)
 
     class Meta:
         verbose_name = "Звезда рейтинга"
@@ -94,10 +107,10 @@ class Reviews(models.Model):
     parent = models.ForeignKey(
         'self', verbose_name="Родитель", on_delete=models.SET_NULL, blank=True, null=True
     )
-    movie = models.ForeignKey(Anime, verbose_name="фильм", on_delete=models.CASCADE)
+    anime = models.ForeignKey(Anime, verbose_name="Аниме", on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.name} - {self.movie}"
+        return f"{self.name} - {self.anime}"
 
     class Meta:
         verbose_name = "Отзыв"

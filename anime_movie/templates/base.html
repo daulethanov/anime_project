@@ -1,0 +1,178 @@
+<!DOCTYPE html> {% load static %}
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Аниме</title>
+    <meta name="description" content="Аниме-подоборка аниме сериалов и фильмов" />
+    <meta name="keywords" content="аниме,аниме онлайн" />
+
+    <link rel="stylesheet" href='{% static "css/style.css" %}'>
+
+</head>
+
+<body>
+
+
+    <div class="main">
+
+        <div class="header">
+            <div class="logo">
+                <div class="logo_text">
+                    <h1><a href="/">Аниме</a></h1>
+                    <h2>Аниме - это жизнь!</h2>
+                </div>
+            </div>
+
+            <div class="menubar">
+                <ul class="menu">
+                    <li class="selected"><a href="{% url 'home' %}">Главная</a></li>
+                    <li><a href="{% url 'films' %}">Полнометражки</a></li>
+                    <li><a href="{% url 'serial' %}">Сериалы</a></li>
+                    <li><a href="{% url 'rating' %}">Рейтинг всех аниме</a></li>
+                    <li><a href="{% url 'contact' %}">Контакты</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="site_content">
+
+            <div class="sidebar_container">
+
+                <div class="sidebar">
+                    <h2>Поиск</h2>
+                    <form action="{% url 'search' %}" method="get" id="">
+                        <input type="search" placeholder="ваш запрос" name="q" />
+                        <input type="submit" class="btn" value="найти" />
+                    </form>
+                </div>
+                {% if request.user.is_authenticated %} {{user.username}} | <a href="{% url 'logout' %}">Выйти</a> {% else %}
+                <a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Войти</a> {% endif %}
+
+            <aside class="side" id="side">
+
+					<div class="side-box nomb to-mob">
+						<div class="side-bt icon-l"> ФИЛЬТР АНИМЕ
+						</div>
+						<div class="side-bc">
+							<form action="{% url 'search' %}" method="get" id="search_form"  dlefilter="dle-filter" class="filter-anime" >
+
+								<!--Тайтл-->
+								<div class="fb-sect-name">Примерное название аниме</div>
+								<div class="fb-sel">
+									<input class="filter-inputs" name="q" value="" placeholder="Примерное название" type="search" >
+
+								</div>
+								<!--\\Тайтл-->
+
+								<!--Жанры-->
+								<div class="fb-sect-name">Выберите жанр</div>
+								<div class="fb-sel">
+
+									<select placeholder="Выбрать жанры" required="required" >
+									<option value="Выбрать жанры">Выбрать жанры</option>
+				                    {% for genre in view.get_genre %}
+										<option value="{{genre.name}}">{{genre.name}}</option>
+				                    {% endfor %}
+									</select>
+								</div>
+								<!--\\Жанры-->
+
+
+								<form action="{% url 'date' %}" method="get">
+								<!--Год-->
+									{% csrf_token %}
+								<div class="fb-sect-name">Выбрать год</div>
+								<div class="filter-god">
+									<input   class="filter-inputs" name="q" value="" placeholder="От" type="search" style="margin-right: 13px; width:48%;">
+									<input   class="filter-inputs" name="q" value="" placeholder="До" type="search" style="margin-right: 13px; width:48%;">
+									<input type="submit" value="Искать">
+								</div>
+								<!--\\Год-->
+								</form>
+								<!--Статус-->
+								<div class="fb-sect-name">Выбрать статус аниме</div>
+								<div class="fb-sel">
+									<select name="anime_status" placeholder="Не учитывать">
+										<option value="not to consider">Не учитывать</option>
+										<option value="Ongoing">Онгоинг</option>
+										<option value="Released">Выпущенный</option>
+									</select>
+								</div>
+								<!--\\Статус-->
+
+								<!--Тип-->
+								<div class="fb-sect-name">Выбрать тип аниме</div>
+								<div class="fb-checks">
+									<div class="lb-check">
+										 {% for category in anime_list %}
+										<input name="anime_kind" value="OVA" type="checkbox">
+										<label for="OVA">{{category.category}} </label>
+										{% endfor %}
+									</div>
+
+								</div>
+								<!--\\Тип-->
+
+								<!--Сортировка-->
+								<div class="fb-sect-name">Выбрать сортировку</div>
+								<div class="fb-sel">
+									<select name="sort" placeholder="По умолчанию: Новые ">
+										<option value="date;desc"> По умолчанию: Новые </option>
+										<option value="date;desc">Новые </option>
+										<option value="date;asc">Старые </option>
+										<option value="comm_num;desc">Комментируемые</option>
+										<option value="news_read;desc">Просматриваемые</option>
+										<option value="rating;desc">Рейтинговые</option>
+									</select>
+								</div>
+								<!--\\Сортировка-->
+
+								<!--Возрастное ограничение-->
+								<div class="fb-sect-name">Возрастное ограничение 18+</div>
+								<div class="fb-sel">
+									<select name="vozrast" placeholder="Не учитывать">
+										<option value="vozrast">Не учитывать</option>
+										<option value="yes">Да</option>
+										<option value="no">Нет</option>
+									</select>
+								</div>
+								<!--\\Возрастное ограничение-->
+
+								<!--Кнопки-->
+								<div class="filter-button">
+									<input type="button"  value="Поиск" >
+									<input type="button"  value="Очистить" >
+								</div>
+								<!--\\Кнопки-->
+							</form>
+						</div>
+					</div>
+
+                <div class="sidebar">
+                    <h2>Новости</h2>
+                    <span>15.02.2021</span>
+                    <p>Мы запустили расширенный поиск</p>
+                    <a href="#">читать</a>
+                </div>
+
+                <div class="sidebar">
+                    <h2>Рейтинг аниме сериалов</h2>
+                    <ul>
+                        {% for category in view.get_categories %}
+                        <li><a href="#">{{category.name}}</a><span class="rating_sidebar">7.3</span></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+  </div>
+
+            {% block content %} {% endblock content %}
+
+
+
+</body>
+
+</html>
